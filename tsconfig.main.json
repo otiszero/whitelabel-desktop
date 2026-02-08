@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist-electron",
+    "rootDir": "src",
+    "resolveJsonModule": true,
+    "declaration": false,
+    "baseUrl": ".",
+    "paths": {
+      "@crypto/*": ["src/crypto/*"],
+      "@config/*": ["src/config/*"]
+    }
+  },
+  "include": ["src/main/**/*", "src/crypto/**/*"],
+  "exclude": ["node_modules"]
+}

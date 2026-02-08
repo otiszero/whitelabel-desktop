@@ -1,0 +1,35 @@
+{
+  "$schema": "./whitelabel.schema.json",
+  "appName": "AirGap Wallet",
+  "appId": "com.whitelabel.airgap-wallet",
+  "version": "1.0.0",
+  "theme": {
+    "primaryColor": "#3B82F6",
+    "primaryDarkColor": "#2563EB",
+    "secondaryColor": "#6366F1",
+    "backgroundColor": "#0F172A",
+    "surfaceColor": "#1E293B",
+    "surfaceLightColor": "#334155",
+    "textColor": "#F1F5F9",
+    "textMutedColor": "#94A3B8",
+    "accentColor": "#10B981",
+    "successColor": "#22C55E",
+    "warningColor": "#F59E0B",
+    "errorColor": "#EF4444"
+  },
+  "branding": {
+    "logoPath": "./assets/logo.svg",
+    "iconPath": "./assets/icon.png",
+    "companyName": "AirGap Wallet",
+    "tagline": "Offline • Secure • Private",
+    "supportEmail": "support@example.com",
+    "websiteUrl": "https://example.com"
+  },
+  "features": {
+    "enabledChains": ["btc", "eth", "xrp", "tron"],
+    "defaultChain": "btc",
+    "showAboutPage": true,
+    "autoLockTimeout": 300000,
+    "maxMnemonicWords": 24
+  }
+}
