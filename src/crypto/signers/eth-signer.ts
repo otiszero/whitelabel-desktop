@@ -4,7 +4,7 @@
  */
 
 import { Wallet, Transaction, getAddress, isAddress } from 'ethers';
-import { BaseSigner, EthSignInput, EthMeta, ValidationResult, SignerResult } from './types';
+import { BaseSigner, EthSignInput, EthMeta, ValidationResult, SignerResult } from './types.js';
 
 export class EthSigner implements BaseSigner<EthSignInput, EthMeta> {
   validate(input: EthSignInput): ValidationResult {

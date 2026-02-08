@@ -2,20 +2,20 @@
  * Signer Service - IPC handlers for transaction signing
  */
 
-import { getPrivateKey, isUnlocked } from './keystore-service';
-import { BtcSigner } from '../crypto/signers/btc-signer';
-import { EthSigner } from '../crypto/signers/eth-signer';
-import { XrpSigner } from '../crypto/signers/xrp-signer';
-import { TronSigner } from '../crypto/signers/tron-signer';
+import { getPrivateKey, isUnlocked } from './keystore-service.js';
+import { BtcSigner } from '../crypto/signers/btc-signer.js';
+import { EthSigner } from '../crypto/signers/eth-signer.js';
+import { XrpSigner } from '../crypto/signers/xrp-signer.js';
+import { TronSigner } from '../crypto/signers/tron-signer.js';
 import {
   BtcSignInput,
   EthSignInput,
   XrpSignInput,
   TronSignInput,
   SignerResult,
-} from '../crypto/signers/types';
-import { secureZeroFill } from '../crypto/memory-utils';
-import { ChainType } from '../crypto/types';
+} from '../crypto/signers/types.js';
+import { secureZeroFill } from '../crypto/memory-utils.js';
+import { ChainType } from '../crypto/types.js';
 
 // Initialize signers
 const btcSigner = new BtcSigner(false);

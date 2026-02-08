@@ -5,8 +5,8 @@
 
 import { Session, app } from 'electron';
 
-const ALLOWED_PROTOCOLS = ['file:', 'data:', 'blob:'];
-const DEV_ALLOWED_ORIGINS = ['http://localhost:5173', 'ws://localhost:5173'];
+const ALLOWED_PROTOCOLS = ['file:', 'data:', 'blob:', 'devtools:', 'chrome-devtools:'];
+const DEV_ALLOWED_ORIGINS = ['http://localhost:5173', 'ws://localhost:5173', 'ws://localhost:'];
 
 interface BlockedRequest {
   url: string;

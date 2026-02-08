@@ -3,7 +3,7 @@
  */
 
 import { ipcMain } from 'electron';
-import { getBlockedRequests } from './network-blocker';
+import { getBlockedRequests } from './network-blocker.js';
 import {
   createNewKeystore,
   unlockKeystore,
@@ -14,9 +14,9 @@ import {
   getAddress,
   keystoreExists,
   createWallet,
-} from './keystore-service';
-import { signTransaction, signBtc, signEth, signXrp, signTron } from './signer-service';
-import { ChainType } from '../crypto/types';
+} from './keystore-service.js';
+import { signTransaction, signBtc, signEth, signXrp, signTron } from './signer-service.js';
+import { ChainType } from '../crypto/types.js';
 
 export function registerIpcHandlers(): void {
   // ==================== Keystore Handlers ====================

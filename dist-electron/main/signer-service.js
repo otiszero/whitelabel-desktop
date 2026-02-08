@@ -1,33 +1,26 @@
-"use strict";
 /**
  * Signer Service - IPC handlers for transaction signing
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.signBtc = signBtc;
-exports.signEth = signEth;
-exports.signXrp = signXrp;
-exports.signTron = signTron;
-exports.signTransaction = signTransaction;
-const keystore_service_1 = require("./keystore-service");
-const btc_signer_1 = require("../crypto/signers/btc-signer");
-const eth_signer_1 = require("../crypto/signers/eth-signer");
-const xrp_signer_1 = require("../crypto/signers/xrp-signer");
-const tron_signer_1 = require("../crypto/signers/tron-signer");
-const memory_utils_1 = require("../crypto/memory-utils");
+import { getPrivateKey, isUnlocked } from './keystore-service.js';
+import { BtcSigner } from '../crypto/signers/btc-signer.js';
+import { EthSigner } from '../crypto/signers/eth-signer.js';
+import { XrpSigner } from '../crypto/signers/xrp-signer.js';
+import { TronSigner } from '../crypto/signers/tron-signer.js';
+import { secureZeroFill } from '../crypto/memory-utils.js';
 // Initialize signers
-const btcSigner = new btc_signer_1.BtcSigner(false);
-const btcTestnetSigner = new btc_signer_1.BtcSigner(true);
-const ethSigner = new eth_signer_1.EthSigner();
-const xrpSigner = new xrp_signer_1.XrpSigner();
-const tronSigner = new tron_signer_1.TronSigner();
+const btcSigner = new BtcSigner(false);
+const btcTestnetSigner = new BtcSigner(true);
+const ethSigner = new EthSigner();
+const xrpSigner = new XrpSigner();
+const tronSigner = new TronSigner();
 /**
  * Sign a Bitcoin PSBT
  */
-async function signBtc(walletId, input, testnet = false) {
-    if (!(0, keystore_service_1.isUnlocked)()) {
+export async function signBtc(walletId, input, testnet = false) {
+    if (!isUnlocked()) {
         return { success: false, error: 'Keystore is locked' };
     }
-    const privateKey = (0, keystore_service_1.getPrivateKey)(walletId);
+    const privateKey = getPrivateKey(walletId);
     if (!privateKey) {
         return { success: false, error: 'Wallet not found' };
     }
@@ -49,17 +42,17 @@ async function signBtc(walletId, input, testnet = false) {
         };
     }
     finally {
-        (0, memory_utils_1.secureZeroFill)(privateKey);
+        secureZeroFill(privateKey);
     }
 }
 /**
  * Sign an Ethereum transaction
  */
-async function signEth(walletId, input) {
-    if (!(0, keystore_service_1.isUnlocked)()) {
+export async function signEth(walletId, input) {
+    if (!isUnlocked()) {
         return { success: false, error: 'Keystore is locked' };
     }
-    const privateKey = (0, keystore_service_1.getPrivateKey)(walletId);
+    const privateKey = getPrivateKey(walletId);
     if (!privateKey) {
         return { success: false, error: 'Wallet not found' };
     }
@@ -80,17 +73,17 @@ async function signEth(walletId, input) {
         };
     }
     finally {
-        (0, memory_utils_1.secureZeroFill)(privateKey);
+        secureZeroFill(privateKey);
     }
 }
 /**
  * Sign an XRP Payment transaction
  */
-async function signXrp(walletId, input) {
-    if (!(0, keystore_service_1.isUnlocked)()) {
+export async function signXrp(walletId, input) {
+    if (!isUnlocked()) {
         return { success: false, error: 'Keystore is locked' };
     }
-    const privateKey = (0, keystore_service_1.getPrivateKey)(walletId);
+    const privateKey = getPrivateKey(walletId);
     if (!privateKey) {
         return { success: false, error: 'Wallet not found' };
     }
@@ -111,17 +104,17 @@ async function signXrp(walletId, input) {
         };
     }
     finally {
-        (0, memory_utils_1.secureZeroFill)(privateKey);
+        secureZeroFill(privateKey);
     }
 }
 /**
  * Sign a TRON Transfer transaction
  */
-async function signTron(walletId, input) {
-    if (!(0, keystore_service_1.isUnlocked)()) {
+export async function signTron(walletId, input) {
+    if (!isUnlocked()) {
         return { success: false, error: 'Keystore is locked' };
     }
-    const privateKey = (0, keystore_service_1.getPrivateKey)(walletId);
+    const privateKey = getPrivateKey(walletId);
     if (!privateKey) {
         return { success: false, error: 'Wallet not found' };
     }
@@ -142,13 +135,13 @@ async function signTron(walletId, input) {
         };
     }
     finally {
-        (0, memory_utils_1.secureZeroFill)(privateKey);
+        secureZeroFill(privateKey);
     }
 }
 /**
  * Generic sign function that routes to the appropriate signer
  */
-async function signTransaction(chain, walletId, input) {
+export async function signTransaction(chain, walletId, input) {
     switch (chain) {
         case 'btc':
             return signBtc(walletId, input);

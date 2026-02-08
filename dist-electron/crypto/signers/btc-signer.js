@@ -1,49 +1,12 @@
-"use strict";
 /**
  * Bitcoin PSBT Signer
  * Signs PSBTs for BIP84 Native SegWit (P2WPKH) addresses
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.BtcSigner = void 0;
-exports.createBtcPsbt = createBtcPsbt;
-const bitcoin = __importStar(require("bitcoinjs-lib"));
-const ecc = __importStar(require("@bitcoinerlab/secp256k1"));
+import * as bitcoin from 'bitcoinjs-lib';
+import * as ecc from '@bitcoinerlab/secp256k1';
 // Initialize ECC library
 bitcoin.initEccLib(ecc);
-class BtcSigner {
+export class BtcSigner {
     network;
     constructor(testnet = false) {
         this.network = testnet ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
@@ -140,11 +103,10 @@ class BtcSigner {
         };
     }
 }
-exports.BtcSigner = BtcSigner;
 /**
  * Helper to create a simple P2WPKH PSBT for sending BTC
  */
-function createBtcPsbt(inputs, outputs, network = bitcoin.networks.bitcoin) {
+export function createBtcPsbt(inputs, outputs, network = bitcoin.networks.bitcoin) {
     const psbt = new bitcoin.Psbt({ network });
     for (const input of inputs) {
         psbt.addInput({

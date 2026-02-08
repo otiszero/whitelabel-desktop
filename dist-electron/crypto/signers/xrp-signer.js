@@ -1,16 +1,11 @@
-"use strict";
 /**
  * XRP Payment Transaction Signer
  * Signs XRP Payment transactions offline
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.XRP_CONSTANTS = exports.XrpSigner = void 0;
-exports.xrpToDrops = xrpToDrops;
-exports.dropsToXrp = dropsToXrp;
-const xrpl_1 = require("xrpl");
+import { Wallet } from 'xrpl';
 // XRP address regex
 const XRP_ADDRESS_REGEX = /^r[1-9A-HJ-NP-Za-km-z]{24,34}$/;
-class XrpSigner {
+export class XrpSigner {
     validate(input) {
         const errors = [];
         // Validate destination address
@@ -62,7 +57,7 @@ class XrpSigner {
     async sign(input, privateKey) {
         // Create wallet from private key
         // XRP uses secp256k1 - derive seed from private key
-        const wallet = xrpl_1.Wallet.fromSeed(this.privateKeyToSeed(privateKey));
+        const wallet = Wallet.fromSeed(this.privateKeyToSeed(privateKey));
         // Construct Payment transaction
         const payment = {
             TransactionType: 'Payment',
@@ -101,11 +96,10 @@ class XrpSigner {
         return `s${Buffer.from(privateKey).toString('base64').substring(0, 28)}`;
     }
 }
-exports.XrpSigner = XrpSigner;
 /**
  * Helper constants for XRP
  */
-exports.XRP_CONSTANTS = {
+export const XRP_CONSTANTS = {
     DROPS_PER_XRP: 1000000,
     MIN_FEE_DROPS: 10,
     RECOMMENDED_FEE_DROPS: 12,
@@ -114,12 +108,12 @@ exports.XRP_CONSTANTS = {
 /**
  * Convert XRP to drops
  */
-function xrpToDrops(xrp) {
-    return (BigInt(Math.floor(Number(xrp) * exports.XRP_CONSTANTS.DROPS_PER_XRP))).toString();
+export function xrpToDrops(xrp) {
+    return (BigInt(Math.floor(Number(xrp) * XRP_CONSTANTS.DROPS_PER_XRP))).toString();
 }
 /**
  * Convert drops to XRP
  */
-function dropsToXrp(drops) {
-    return (Number(drops) / exports.XRP_CONSTANTS.DROPS_PER_XRP).toFixed(6);
+export function dropsToXrp(drops) {
+    return (Number(drops) / XRP_CONSTANTS.DROPS_PER_XRP).toFixed(6);
 }

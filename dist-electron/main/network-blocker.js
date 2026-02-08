@@ -1,23 +1,18 @@
-"use strict";
 /**
  * Network Blocker - Core security feature for air-gapped operation
  * Blocks ALL HTTP, HTTPS, and WebSocket requests at session level
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.blockAllNetworkRequests = blockAllNetworkRequests;
-exports.applySecurityFlags = applySecurityFlags;
-exports.getBlockedRequests = getBlockedRequests;
-const electron_1 = require("electron");
-const ALLOWED_PROTOCOLS = ['file:', 'data:', 'blob:'];
-const DEV_ALLOWED_ORIGINS = ['http://localhost:5173', 'ws://localhost:5173'];
+import { app } from 'electron';
+const ALLOWED_PROTOCOLS = ['file:', 'data:', 'blob:', 'devtools:', 'chrome-devtools:'];
+const DEV_ALLOWED_ORIGINS = ['http://localhost:5173', 'ws://localhost:5173', 'ws://localhost:'];
 // Keep last 100 blocked requests for debugging
 const blockedRequests = [];
 /**
  * Block all network requests except local file access
  * In dev mode, allows Vite dev server connections only
  */
-function blockAllNetworkRequests(session) {
-    const isDev = !electron_1.app.isPackaged;
+export function blockAllNetworkRequests(session) {
+    const isDev = !app.isPackaged;
     session.webRequest.onBeforeRequest((details, callback) => {
         const { url } = details;
         // Always allow local protocols
@@ -41,18 +36,18 @@ function blockAllNetworkRequests(session) {
 /**
  * Apply additional command-line security flags
  */
-function applySecurityFlags() {
+export function applySecurityFlags() {
     // Disable Chromium background networking
-    electron_1.app.commandLine.appendSwitch('disable-background-networking');
-    electron_1.app.commandLine.appendSwitch('disable-component-update');
-    electron_1.app.commandLine.appendSwitch('disable-domain-reliability');
-    electron_1.app.commandLine.appendSwitch('disable-sync');
+    app.commandLine.appendSwitch('disable-background-networking');
+    app.commandLine.appendSwitch('disable-component-update');
+    app.commandLine.appendSwitch('disable-domain-reliability');
+    app.commandLine.appendSwitch('disable-sync');
     // Disable crash reporter network calls
-    electron_1.app.commandLine.appendSwitch('disable-breakpad');
+    app.commandLine.appendSwitch('disable-breakpad');
 }
 /**
  * Get list of recently blocked requests (for debugging)
  */
-function getBlockedRequests() {
+export function getBlockedRequests() {
     return [...blockedRequests];
 }

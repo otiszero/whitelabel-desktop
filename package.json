@@ -7,8 +7,9 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
     "dev:vite": "vite",
-    "dev:electron": "wait-on http://localhost:5173 && electron .",
-    "build": "tsc -p tsconfig.main.json && vite build",
+    "dev:electron": "npm run build:preload && wait-on http://localhost:5173 && electron .",
+    "build": "tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && vite build",
+    "build:preload": "tsc -p tsconfig.preload.json",
     "build:electron": "npm run build && electron-builder",
     "start": "electron .",
     "typecheck": "tsc --noEmit",

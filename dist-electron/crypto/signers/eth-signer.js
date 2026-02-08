@@ -1,16 +1,13 @@
-"use strict";
 /**
  * Ethereum EIP-1559 Transaction Signer
  * Signs EIP-1559 (type 2) transactions for ETH transfers and contract calls
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ETH_CHAIN_IDS = exports.ETH_GAS_ESTIMATES = exports.EthSigner = void 0;
-const ethers_1 = require("ethers");
-class EthSigner {
+import { Wallet, Transaction, getAddress, isAddress } from 'ethers';
+export class EthSigner {
     validate(input) {
         const errors = [];
         // Validate 'to' address
-        if (!(0, ethers_1.isAddress)(input.to)) {
+        if (!isAddress(input.to)) {
             errors.push('Invalid recipient address');
         }
         // Validate chainId
@@ -60,11 +57,11 @@ class EthSigner {
     }
     async sign(input, privateKey) {
         // Create wallet from private key (convert Buffer to hex string)
-        const wallet = new ethers_1.Wallet('0x' + privateKey.toString('hex'));
+        const wallet = new Wallet('0x' + privateKey.toString('hex'));
         // Checksummed addresses
-        const toAddress = (0, ethers_1.getAddress)(input.to);
+        const toAddress = getAddress(input.to);
         // Build EIP-1559 transaction
-        const tx = ethers_1.Transaction.from({
+        const tx = Transaction.from({
             type: 2,
             chainId: input.chainId,
             nonce: input.nonce,
@@ -78,7 +75,7 @@ class EthSigner {
         // Sign the transaction
         const signedTx = await wallet.signTransaction(tx);
         // Parse signed transaction to get hash
-        const parsedTx = ethers_1.Transaction.from(signedTx);
+        const parsedTx = Transaction.from(signedTx);
         return {
             signedTx,
             txHash: parsedTx.hash,
@@ -90,11 +87,10 @@ class EthSigner {
         };
     }
 }
-exports.EthSigner = EthSigner;
 /**
  * Helper to estimate gas for common operations
  */
-exports.ETH_GAS_ESTIMATES = {
+export const ETH_GAS_ESTIMATES = {
     TRANSFER: 21000,
     ERC20_TRANSFER: 65000,
     CONTRACT_CALL: 100000,
@@ -102,7 +98,7 @@ exports.ETH_GAS_ESTIMATES = {
 /**
  * Common chain IDs
  */
-exports.ETH_CHAIN_IDS = {
+export const ETH_CHAIN_IDS = {
     MAINNET: 1,
     GOERLI: 5,
     SEPOLIA: 11155111,

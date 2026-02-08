@@ -6,6 +6,11 @@ export default defineConfig({
   plugins: [react()],
   root: 'src/renderer',
   base: './',
+  define: {
+    // Polyfill process.env for packages that expect Node.js environment
+    'process.env': {},
+    'process.browser': true,
+  },
   build: {
     outDir: '../../dist-renderer',
     emptyOutDir: true,

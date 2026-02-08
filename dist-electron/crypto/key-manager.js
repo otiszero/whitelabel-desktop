@@ -1,80 +1,41 @@
-"use strict";
 /**
  * Key Manager - BIP39/BIP44 Key Generation and Derivation
  * Handles mnemonic generation and HD key derivation for all supported chains
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateMnemonic = generateMnemonic;
-exports.validateMnemonic = validateMnemonic;
-exports.mnemonicToSeed = mnemonicToSeed;
-exports.deriveKeyPair = deriveKeyPair;
-const bip39 = __importStar(require("@scure/bip39"));
-const english_1 = require("@scure/bip39/wordlists/english");
-const bip32_1 = require("@scure/bip32");
-const sha2_1 = require("@noble/hashes/sha2");
-const legacy_1 = require("@noble/hashes/legacy");
-const sha3_1 = require("@noble/hashes/sha3");
-const types_1 = require("./types");
+import * as bip39 from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english.js';
+import { HDKey } from '@scure/bip32';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { ripemd160 } from '@noble/hashes/legacy.js';
+import { keccak_256 } from '@noble/hashes/sha3.js';
+import { DERIVATION_PATHS } from './types.js';
 /**
  * Generate a new BIP39 mnemonic
  * @param strength 128 for 12 words, 256 for 24 words
  */
-function generateMnemonic(strength = 256) {
-    return bip39.generateMnemonic(english_1.wordlist, strength);
+export function generateMnemonic(strength = 256) {
+    return bip39.generateMnemonic(wordlist, strength);
 }
 /**
  * Validate a BIP39 mnemonic
  */
-function validateMnemonic(mnemonic) {
-    return bip39.validateMnemonic(mnemonic, english_1.wordlist);
+export function validateMnemonic(mnemonic) {
+    return bip39.validateMnemonic(mnemonic, wordlist);
 }
 /**
  * Convert mnemonic to seed
  */
-function mnemonicToSeed(mnemonic, passphrase = '') {
+export function mnemonicToSeed(mnemonic, passphrase = '') {
     const seed = bip39.mnemonicToSeedSync(mnemonic, passphrase);
     return Buffer.from(seed);
 }
 /**
  * Derive a key pair for a specific chain and address index
  */
-function deriveKeyPair(seed, chain, addressIndex = 0) {
-    const basePath = types_1.DERIVATION_PATHS[chain];
+export function deriveKeyPair(seed, chain, addressIndex = 0) {
+    const basePath = DERIVATION_PATHS[chain];
     const fullPath = `${basePath}/0/${addressIndex}`;
-    const hdKey = bip32_1.HDKey.fromMasterSeed(seed);
+    const hdKey = HDKey.fromMasterSeed(seed);
     const derived = hdKey.derive(fullPath);
     if (!derived.privateKey || !derived.publicKey) {
         throw new Error('Failed to derive key pair');
@@ -106,8 +67,8 @@ function deriveAddress(chain, publicKey, privateKey) {
  */
 function deriveBtcAddress(publicKey) {
     // Hash160 = RIPEMD160(SHA256(pubkey))
-    const sha = (0, sha2_1.sha256)(publicKey);
-    const hash160 = (0, legacy_1.ripemd160)(sha);
+    const sha = sha256(publicKey);
+    const hash160 = ripemd160(sha);
     // Bech32 encoding for native SegWit
     return bech32Encode('bc', 0, Buffer.from(hash160));
 }
@@ -120,7 +81,7 @@ function deriveEthAddress(publicKey) {
     // @scure/bip32 gives us compressed keys (33 bytes starting with 02 or 03)
     const uncompressed = decompressPublicKey(publicKey);
     // Keccak256 of the 64-byte public key (without 04 prefix)
-    const hash = (0, sha3_1.keccak_256)(uncompressed.slice(1));
+    const hash = keccak_256(uncompressed.slice(1));
     // Take last 20 bytes
     const address = Buffer.from(hash.slice(-20));
     return '0x' + address.toString('hex');
@@ -129,8 +90,8 @@ function deriveEthAddress(publicKey) {
  * XRP address - Base58Check with version byte 0x00
  */
 function deriveXrpAddress(publicKey) {
-    const sha = (0, sha2_1.sha256)(publicKey);
-    const hash160 = (0, legacy_1.ripemd160)(sha);
+    const sha = sha256(publicKey);
+    const hash160 = ripemd160(sha);
     // XRP uses its own alphabet
     return base58CheckEncode(Buffer.from(hash160), 0x00, 'ripple');
 }
@@ -139,7 +100,7 @@ function deriveXrpAddress(publicKey) {
  */
 function deriveTronAddress(publicKey) {
     const uncompressed = decompressPublicKey(publicKey);
-    const hash = (0, sha3_1.keccak_256)(uncompressed.slice(1));
+    const hash = keccak_256(uncompressed.slice(1));
     // Take last 20 bytes
     const addressBytes = Buffer.from(hash.slice(-20));
     // Add TRON mainnet prefix (0x41)
@@ -253,7 +214,7 @@ function base58CheckEncode(payload, version, alphabet) {
     const chars = ALPHABETS[alphabet];
     let data = version !== null ? Buffer.concat([Buffer.from([version]), payload]) : payload;
     // Double SHA256 checksum
-    const checksum = (0, sha2_1.sha256)((0, sha2_1.sha256)(data)).slice(0, 4);
+    const checksum = sha256(sha256(data)).slice(0, 4);
     data = Buffer.concat([data, Buffer.from(checksum)]);
     // Convert to base58
     let num = BigInt('0x' + data.toString('hex'));

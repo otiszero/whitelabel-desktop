@@ -4,12 +4,12 @@
  */
 
 import * as bip39 from '@scure/bip39';
-import { wordlist } from '@scure/bip39/wordlists/english';
+import { wordlist } from '@scure/bip39/wordlists/english.js';
 import { HDKey } from '@scure/bip32';
-import { sha256 } from '@noble/hashes/sha2';
-import { ripemd160 } from '@noble/hashes/legacy';
-import { keccak_256 } from '@noble/hashes/sha3';
-import { ChainType, KeyPair, DERIVATION_PATHS } from './types';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { ripemd160 } from '@noble/hashes/legacy.js';
+import { keccak_256 } from '@noble/hashes/sha3.js';
+import { ChainType, KeyPair, DERIVATION_PATHS } from './types.js';
 
 /**
  * Generate a new BIP39 mnemonic

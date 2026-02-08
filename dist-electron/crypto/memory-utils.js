@@ -1,18 +1,11 @@
-"use strict";
 /**
  * Memory Security Utilities
  * Secure handling of sensitive data in memory
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.secureZeroFill = secureZeroFill;
-exports.withSecureBuffer = withSecureBuffer;
-exports.withSecureBufferAsync = withSecureBufferAsync;
-exports.withHexBuffer = withHexBuffer;
-exports.secureCompare = secureCompare;
 /**
  * Zero-fill a buffer to prevent data leakage
  */
-function secureZeroFill(buffer) {
+export function secureZeroFill(buffer) {
     if (!buffer || buffer.length === 0)
         return;
     buffer.fill(0);
@@ -20,7 +13,7 @@ function secureZeroFill(buffer) {
 /**
  * Execute a function with a buffer, then securely clear it
  */
-function withSecureBuffer(data, fn) {
+export function withSecureBuffer(data, fn) {
     try {
         return fn(data);
     }
@@ -31,7 +24,7 @@ function withSecureBuffer(data, fn) {
 /**
  * Execute an async function with a buffer, then securely clear it
  */
-async function withSecureBufferAsync(data, fn) {
+export async function withSecureBufferAsync(data, fn) {
     try {
         return await fn(data);
     }
@@ -42,7 +35,7 @@ async function withSecureBufferAsync(data, fn) {
 /**
  * Create a buffer from hex, use it, then clear it
  */
-function withHexBuffer(hex, fn) {
+export function withHexBuffer(hex, fn) {
     const buffer = Buffer.from(hex, 'hex');
     return withSecureBuffer(buffer, fn);
 }
@@ -50,7 +43,7 @@ function withHexBuffer(hex, fn) {
  * Securely compare two buffers in constant time
  * Prevents timing attacks
  */
-function secureCompare(a, b) {
+export function secureCompare(a, b) {
     if (a.length !== b.length)
         return false;
     let result = 0;

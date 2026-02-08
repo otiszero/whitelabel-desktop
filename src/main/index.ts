@@ -5,8 +5,12 @@
 
 import { app, BrowserWindow, session } from 'electron';
 import * as path from 'path';
-import { blockAllNetworkRequests, applySecurityFlags } from './network-blocker';
-import { registerIpcHandlers } from './ipc-handlers';
+import { fileURLToPath } from 'url';
+import { blockAllNetworkRequests, applySecurityFlags } from './network-blocker.js';
+import { registerIpcHandlers } from './ipc-handlers.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Apply security flags before app is ready
 applySecurityFlags();

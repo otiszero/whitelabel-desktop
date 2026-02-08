@@ -5,7 +5,7 @@
 
 import * as bitcoin from 'bitcoinjs-lib';
 import * as ecc from '@bitcoinerlab/secp256k1';
-import { BaseSigner, BtcSignInput, BtcMeta, ValidationResult, SignerResult } from './types';
+import { BaseSigner, BtcSignInput, BtcMeta, ValidationResult, SignerResult } from './types.js';
 
 // Initialize ECC library
 bitcoin.initEccLib(ecc);

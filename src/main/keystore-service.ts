@@ -13,15 +13,15 @@ import {
   updateKeystoreWallets,
   verifyPassword,
   validatePassword,
-} from '../crypto/keystore';
+} from '../crypto/keystore.js';
 import {
   generateMnemonic,
   validateMnemonic,
   mnemonicToSeed,
   deriveKeyPair,
-} from '../crypto/key-manager';
-import { secureZeroFill } from '../crypto/memory-utils';
-import { ChainType, KeystoreFile, WalletMeta, WalletInfo, KeyPair } from '../crypto/types';
+} from '../crypto/key-manager.js';
+import { secureZeroFill } from '../crypto/memory-utils.js';
+import { ChainType, KeystoreFile, WalletMeta, WalletInfo, KeyPair } from '../crypto/types.js';
 
 // In-memory cache for unlocked state
 let unlockedKeystore: {

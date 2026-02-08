@@ -3,10 +3,10 @@
  * Signs TRON TRX transfer transactions offline
  */
 
-import { sha256 } from '@noble/hashes/sha2';
-import { keccak_256 } from '@noble/hashes/sha3';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { keccak_256 } from '@noble/hashes/sha3.js';
 import * as secp256k1 from '@noble/secp256k1';
-import { BaseSigner, TronSignInput, TronMeta, ValidationResult, SignerResult } from './types';
+import { BaseSigner, TronSignInput, TronMeta, ValidationResult, SignerResult } from './types.js';
 
 // TRON address regex (Base58Check with T prefix)
 const TRON_ADDRESS_REGEX = /^T[1-9A-HJ-NP-Za-km-z]{33}$/;

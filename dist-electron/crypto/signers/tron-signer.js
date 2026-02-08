@@ -1,53 +1,15 @@
-"use strict";
 /**
  * TRON Transfer Signer
  * Signs TRON TRX transfer transactions offline
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TRON_CONSTANTS = exports.TronSigner = void 0;
-exports.trxToSun = trxToSun;
-exports.sunToTrx = sunToTrx;
-const sha2_1 = require("@noble/hashes/sha2");
-const sha3_1 = require("@noble/hashes/sha3");
-const secp256k1 = __importStar(require("@noble/secp256k1"));
+import { sha256 } from '@noble/hashes/sha2.js';
+import { keccak_256 } from '@noble/hashes/sha3.js';
+import * as secp256k1 from '@noble/secp256k1';
 // TRON address regex (Base58Check with T prefix)
 const TRON_ADDRESS_REGEX = /^T[1-9A-HJ-NP-Za-km-z]{33}$/;
 // TRON address prefix for mainnet
 const TRON_ADDRESS_PREFIX = 0x41;
-class TronSigner {
+export class TronSigner {
     validate(input) {
         const errors = [];
         // Validate 'to' address
@@ -112,7 +74,7 @@ class TronSigner {
         // Get public key (uncompressed, without prefix)
         const publicKey = secp256k1.getPublicKey(privateKey, false).slice(1);
         // Keccak256 hash of public key
-        const hash = (0, sha3_1.keccak_256)(publicKey);
+        const hash = keccak_256(publicKey);
         // Take last 20 bytes and add prefix
         const addressBytes = new Uint8Array(21);
         addressBytes[0] = TRON_ADDRESS_PREFIX;
@@ -162,7 +124,7 @@ class TronSigner {
         // For simplicity, we hash the JSON - in production use protobuf
         const rawData = rawTx.raw_data;
         const serialized = JSON.stringify(rawData);
-        return (0, sha2_1.sha256)(new TextEncoder().encode(serialized));
+        return sha256(new TextEncoder().encode(serialized));
     }
     /**
      * Sign hash with private key
@@ -183,7 +145,7 @@ class TronSigner {
     base58CheckEncode(data) {
         const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
         // Compute checksum
-        const checksum = (0, sha2_1.sha256)((0, sha2_1.sha256)(data)).slice(0, 4);
+        const checksum = sha256(sha256(data)).slice(0, 4);
         const full = new Uint8Array(data.length + 4);
         full.set(data);
         full.set(checksum, data.length);
@@ -233,11 +195,10 @@ class TronSigner {
         return result.slice(0, -4);
     }
 }
-exports.TronSigner = TronSigner;
 /**
  * TRON constants
  */
-exports.TRON_CONSTANTS = {
+export const TRON_CONSTANTS = {
     SUN_PER_TRX: 1000000,
     BANDWIDTH_PRICE: 1000, // sun per bandwidth unit
     ENERGY_PRICE: 420, // sun per energy unit
@@ -245,12 +206,12 @@ exports.TRON_CONSTANTS = {
 /**
  * Convert TRX to Sun
  */
-function trxToSun(trx) {
-    return Math.floor(Number(trx) * exports.TRON_CONSTANTS.SUN_PER_TRX);
+export function trxToSun(trx) {
+    return Math.floor(Number(trx) * TRON_CONSTANTS.SUN_PER_TRX);
 }
 /**
  * Convert Sun to TRX
  */
-function sunToTrx(sun) {
-    return (Number(sun) / exports.TRON_CONSTANTS.SUN_PER_TRX).toFixed(6);
+export function sunToTrx(sun) {
+    return (Number(sun) / TRON_CONSTANTS.SUN_PER_TRX).toFixed(6);
 }

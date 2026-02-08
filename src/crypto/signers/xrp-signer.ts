@@ -4,7 +4,7 @@
  */
 
 import { Wallet } from 'xrpl';
-import { BaseSigner, XrpSignInput, XrpMeta, ValidationResult, SignerResult } from './types';
+import { BaseSigner, XrpSignInput, XrpMeta, ValidationResult, SignerResult } from './types.js';
 
 // XRP address regex
 const XRP_ADDRESS_REGEX = /^r[1-9A-HJ-NP-Za-km-z]{24,34}$/;
